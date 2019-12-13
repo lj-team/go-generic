@@ -4,7 +4,6 @@ github.com/CloudyKit/jet v2.1.2+incompatible h1:ybZoYzMBdoijK6I+Ke3vg9GZsmlKo/Zh
 github.com/CloudyKit/jet v2.1.2+incompatible/go.mod h1:HPYO+50pSWkPoj9Q/eq0aRGByCL6ScRlUmiEX5Zgm+w=
 github.com/FZambia/go-sentinel v0.0.0-20171204085413-76bd05e8e22f h1:Cw8+PWqu3OTXtFUPb6TzFTbYUXrd2EYSM4ZMNwHpvvQ=
 github.com/FZambia/go-sentinel v0.0.0-20171204085413-76bd05e8e22f/go.mod h1:Gmudsni9xSECr+W+WXj5+LydMIQ1sVJ69gVswhqFbAc=
-github.com/belfinor/kvstring v1.0.0/go.mod h1:O+5roAfl1rmj8KkYu0yWlzcKL+M91Ahersh1pnIEKKw=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/garyburd/redigo v1.6.0 h1:0VruCpn7yAIIu7pWVClQC8wxCJEcG3nyzpMSHKi1PQc=
