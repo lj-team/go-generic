@@ -1,9 +1,5 @@
 package sendmail
 
-// @author  Mikhail Kirillov <mikkirillov@yandex.ru>
-// @version 1.000
-// @date    2019-07-09
-
 import (
 	"crypto/md5"
 	"encoding/base64"
