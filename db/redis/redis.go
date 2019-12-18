@@ -3,8 +3,8 @@ package redis
 import (
 	"time"
 
-	"github.com/FZambia/go-sentinel"
-	r "github.com/garyburd/redigo/redis"
+	r "github.com/gomodule/redigo/redis"
+	"github.com/lj-team/go-generic/db/redis/sentinel"
 )
 
 var sntnl *sentinel.Sentinel
