@@ -153,4 +153,55 @@ func TestCache(t *testing.T) {
 	tSetNX("sn", "2", "1")
 	tSetNX("5", "19", "19")
 	tSetNX("5", "", "19")
+
+	tSetIfMore := func(k string, v uint64, w string) {
+		res := en.SetIfMore(k, v)
+		if res != w {
+			t.Fatalf("SetIfMore faiiled k=%s d=%d w=%s", k, v, w)
+		}
+	}
+
+	tSetIfMore("5", 8, "19")
+	tSetIfMore("5", 15, "19")
+	tSetIfMore("5", 20, "20")
+	tSetIfMore("sif", 3, "3")
+	tSetIfMore("sif1", 0, "")
+
+	tSetIfLess := func(k string, v uint64, w string) {
+		res := en.SetIfLess(k, v)
+		if res != w {
+			t.Fatalf("SetIfLess failed k=%s d=%d w=%s", k, v, w)
+		}
+	}
+
+	tSetIfLess("sif", 5, "3")
+	tSetIfLess("sif", 2, "2")
+	tSetIfLess("sif", 0, "")
+	tSetIfLess("sil", 13, "13")
+
+	tHSetIfMore := func(h string, k string, v uint64, w string) {
+		res := en.HSetIfMore(h, k, v)
+		if res != w {
+			t.Fatalf("HSetIfMore faiiled h=%s k=%s d=%d w=%s", h, k, v, w)
+		}
+	}
+
+	tHSetIfMore("h1", "15", 13, "20")
+	tHSetIfMore("h1", "15", 0, "20")
+	tHSetIfMore("h1", "15", 22, "22")
+	tHSetIfMore("h1", "19", 0, "")
+	tHSetIfMore("h1", "19", 1, "1")
+
+	tHSetIfLess := func(h string, k string, v uint64, w string) {
+		res := en.HSetIfLess(h, k, v)
+		if res != w {
+			t.Fatalf("HSetIfLess faiiled h=%s k=%s d=%d w=%s", h, k, v, w)
+		}
+	}
+
+	tHSetIfLess("h1", "19", 30, "1")
+	tHSetIfLess("h1", "19", 0, "")
+	tHSetIfLess("h1", "15", 12, "12")
+	tHSetIfLess("h1", "30", 100, "100")
+	tHSetIfLess("h1", "30", 90, "90")
 }

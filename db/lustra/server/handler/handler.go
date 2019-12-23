@@ -40,6 +40,8 @@ func init() {
 	handlers["hdel"] = fHDel
 	handlers["hget"] = fHGet
 	handlers["hset"] = fHSet
+	handlers["hsetifless"] = fHSetIfLess
+	handlers["hsetifmore"] = fHSetIfMore
 	handlers["hsetnx"] = fHSetNX
 	handlers["hdec"] = fHDec
 	handlers["hdecby"] = fHDecBy
@@ -49,6 +51,8 @@ func init() {
 	handlers["incby"] = fIncBy
 	handlers["ping"] = fPing
 	handlers["set"] = fSet
+	handlers["setifless"] = fSetIfLess
+	handlers["setifmore"] = fSetIfMore
 	handlers["setnx"] = fSetNX
 	handlers["time"] = fTime
 	handlers["version"] = fVersion
@@ -141,6 +145,58 @@ func fSetNX(storage Storage, list []string) (string, string) {
 	}
 
 	return storage.SetNX(list[0], list[1]), ""
+}
+
+func fSetIfMore(storage Storage, list []string) (string, string) {
+	if len(list) != 2 {
+		return "", errInvalidParams
+	}
+
+	val, err := strconv.ParseUint(list[1], 10, 64)
+	if err != nil {
+		return "", errInvalidParams
+	}
+
+	return storage.SetIfMore(list[0], val), ""
+}
+
+func fHSetIfMore(storage Storage, list []string) (string, string) {
+	if len(list) != 3 {
+		return "", errInvalidParams
+	}
+
+	val, err := strconv.ParseUint(list[2], 10, 64)
+	if err != nil {
+		return "", errInvalidParams
+	}
+
+	return storage.HSetIfMore(list[0], list[1], val), ""
+}
+
+func fHSetIfLess(storage Storage, list []string) (string, string) {
+	if len(list) != 3 {
+		return "", errInvalidParams
+	}
+
+	val, err := strconv.ParseUint(list[2], 10, 64)
+	if err != nil {
+		return "", errInvalidParams
+	}
+
+	return storage.HSetIfLess(list[0], list[1], val), ""
+}
+
+func fSetIfLess(storage Storage, list []string) (string, string) {
+	if len(list) != 2 {
+		return "", errInvalidParams
+	}
+
+	val, err := strconv.ParseUint(list[1], 10, 64)
+	if err != nil {
+		return "", errInvalidParams
+	}
+
+	return storage.SetIfLess(list[0], val), ""
 }
 
 func fDel(storage Storage, list []string) (string, string) {

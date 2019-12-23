@@ -54,6 +54,55 @@ func (s *engine) SetNX(k, v string) string {
 	return v
 }
 
+func (s *engine) SetIfMore(k string, v uint64) string {
+	key := []byte(k)
+
+	s.shared.Lock(key)
+	defer s.shared.UnLock(key)
+
+	val := s.Get(k)
+	old, _ := strconv.ParseUint(val, 10, 64)
+
+	if old < v {
+		val = strconv.FormatUint(v, 10)
+		s.dbh.Set(key, []byte(val))
+		return val
+	} else if old == 0 {
+		s.dbh.Del(key)
+		val = ""
+	}
+
+	return val
+}
+
+func (s *engine) SetIfLess(k string, v uint64) string {
+	key := []byte(k)
+
+	s.shared.Lock(key)
+	defer s.shared.UnLock(key)
+
+	if v == 0 {
+		s.dbh.Del(key)
+		return ""
+	}
+
+	val := s.Get(k)
+	if val == "" {
+		val = strconv.FormatUint(v, 10)
+		s.dbh.Set(key, []byte(val))
+		return val
+	}
+
+	old, _ := strconv.ParseUint(val, 10, 64)
+	if old > v {
+		val = strconv.FormatUint(v, 10)
+		s.dbh.Set(key, []byte(val))
+		return val
+	}
+
+	return val
+}
+
 func (s *engine) IncBy(k string, cnt uint64) string {
 
 	key := []byte(k)
@@ -195,6 +244,65 @@ func (s *engine) HSetNX(hash string, key string, value string) string {
 	mp[key] = value
 
 	return value
+}
+
+func (s *engine) HSetIfMore(hash string, key string, value uint64) string {
+	hk := []byte(hash)
+
+	s.shared.Lock(hk)
+	defer s.shared.UnLock(hk)
+
+	mp := s.getMap(hk)
+	defer s.saveMap(hk, mp)
+
+	res := mp[key]
+
+	old, _ := strconv.ParseUint(res, 10, 64)
+
+	if old < value {
+		res = strconv.FormatUint(value, 10)
+		mp[key] = res
+	} else if old == 0 {
+		delete(mp, key)
+		res = ""
+	}
+
+	return res
+}
+
+func (s *engine) HSetIfLess(hash string, key string, value uint64) string {
+	hk := []byte(hash)
+
+	s.shared.Lock(hk)
+	defer s.shared.UnLock(hk)
+
+	mp := s.getMap(hk)
+	defer s.saveMap(hk, mp)
+
+	res, has := mp[key]
+
+	if value == 0 {
+		delete(mp, key)
+		return ""
+	}
+
+	if !has {
+		res = strconv.FormatUint(value, 10)
+		mp[key] = res
+		return res
+	}
+
+	old, _ := strconv.ParseUint(res, 10, 64)
+
+	if old > value {
+		res = strconv.FormatUint(value, 10)
+		mp[key] = res
+	} else if old == 0 {
+		delete(mp, key)
+		res = ""
+	}
+
+	return res
 }
 
 func (s *engine) HGet(hash string, key string) string {
