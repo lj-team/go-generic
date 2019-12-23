@@ -1,5 +1,5 @@
 package global
 
 const (
-	Version string = "v1.0.11"
+	Version string = "v1.0.12"
 )
