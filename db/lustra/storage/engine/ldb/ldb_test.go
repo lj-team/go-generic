@@ -177,4 +177,30 @@ func TestLDB(t *testing.T) {
 	tSetIfLess("sif", 2, "2")
 	tSetIfLess("sif", 0, "")
 	tSetIfLess("sil", 13, "13")
+
+	tHSetIfMore := func(h string, k string, v uint64, w string) {
+		res := en.HSetIfMore(h, k, v)
+		if res != w {
+			t.Fatalf("HSetIfMore faiiled h=%s k=%s d=%d w=%s", h, k, v, w)
+		}
+	}
+
+	tHSetIfMore("h1", "15", 13, "20")
+	tHSetIfMore("h1", "15", 0, "20")
+	tHSetIfMore("h1", "15", 22, "22")
+	tHSetIfMore("h1", "19", 0, "")
+	tHSetIfMore("h1", "19", 1, "1")
+
+	tHSetIfLess := func(h string, k string, v uint64, w string) {
+		res := en.HSetIfLess(h, k, v)
+		if res != w {
+			t.Fatalf("HSetIfLess faiiled h=%s k=%s d=%d w=%s", h, k, v, w)
+		}
+	}
+
+	tHSetIfLess("h1", "19", 30, "1")
+	tHSetIfLess("h1", "19", 0, "")
+	tHSetIfLess("h1", "15", 12, "12")
+	tHSetIfLess("h1", "30", 100, "100")
+	tHSetIfLess("h1", "30", 90, "90")
 }

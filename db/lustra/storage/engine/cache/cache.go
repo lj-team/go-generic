@@ -54,22 +54,15 @@ func (s *engine) SetIfMore(k string, v uint64) string {
 	s.shared.Lock(key)
 	defer s.shared.UnLock(key)
 
-	if v == 0 {
-		return ""
-	}
-
 	val, _ := s.cache.Get(k)
-	if val == "" {
-		val = strconv.FormatUint(v, 10)
-		s.cache.Set(k, val)
-		return val
-	}
-
 	old, _ := strconv.ParseUint(val, 10, 64)
 	if old < v {
 		val = strconv.FormatUint(v, 10)
 		s.cache.Set(k, val)
 		return val
+	} else if old == 0 {
+		s.cache.Delete(k)
+		val = ""
 	}
 
 	return val
@@ -314,6 +307,65 @@ func (s *engine) HDecBy(hash string, key string, cnt uint64) string {
 	mp[key] = valStr
 
 	return valStr
+}
+
+func (s *engine) HSetIfMore(hash string, key string, value uint64) string {
+	hk := []byte(hash)
+
+	s.shared.Lock(hk)
+	defer s.shared.UnLock(hk)
+
+	mp := s.getMap(hash)
+	defer s.saveMap(hash, mp)
+
+	res := mp[key]
+
+	old, _ := strconv.ParseUint(res, 10, 64)
+
+	if old < value {
+		res = strconv.FormatUint(value, 10)
+		mp[key] = res
+	} else if old == 0 {
+		delete(mp, key)
+		res = ""
+	}
+
+	return res
+}
+
+func (s *engine) HSetIfLess(hash string, key string, value uint64) string {
+	hk := []byte(hash)
+
+	s.shared.Lock(hk)
+	defer s.shared.UnLock(hk)
+
+	mp := s.getMap(hash)
+	defer s.saveMap(hash, mp)
+
+	res, has := mp[key]
+
+	if value == 0 {
+		delete(mp, key)
+		return ""
+	}
+
+	if !has {
+		res = strconv.FormatUint(value, 10)
+		mp[key] = res
+		return res
+	}
+
+	old, _ := strconv.ParseUint(res, 10, 64)
+
+	if old > value {
+		res = strconv.FormatUint(value, 10)
+		mp[key] = res
+	} else if old == 0 {
+		delete(mp, key)
+		res = ""
+	}
+
+	return res
 }
 
 func init() {

@@ -17,6 +17,8 @@ type Engine interface {
 	HSetNX(string, string, string) string
 	HIncBy(string, string, uint64) string
 	HDecBy(string, string, uint64) string
+	HSetIfLess(string, string, uint64) string
+	HSetIfMore(string, string, uint64) string
 	SetIfLess(string, uint64) string
 	SetIfMore(string, uint64) string
 	Close()
@@ -153,6 +155,22 @@ func (s *Storage) SetIfMore(k string, v uint64) string {
 func (s *Storage) SetIfLess(k string, v uint64) string {
 	if s.dbh != nil {
 		return s.dbh.SetIfLess(k, v)
+	}
+
+	return strconv.FormatUint(v, 10)
+}
+
+func (s *Storage) HSetIfMore(h string, k string, v uint64) string {
+	if s.dbh != nil {
+		return s.dbh.HSetIfMore(h, k, v)
+	}
+
+	return strconv.FormatUint(v, 10)
+}
+
+func (s *Storage) HSetIfLess(h string, k string, v uint64) string {
+	if s.dbh != nil {
+		return s.dbh.HSetIfLess(h, k, v)
 	}
 
 	return strconv.FormatUint(v, 10)

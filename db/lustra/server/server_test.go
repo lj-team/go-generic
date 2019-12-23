@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -29,8 +28,7 @@ func TestServer(t *testing.T) {
 		if exec {
 			str, e := px.Exec(cmd...)
 			if str != answer {
-				fmt.Println(str)
-				t.Fatal("invalid answer cmd=", cmd, " wait=", answer)
+				t.Fatal("invalid answer cmd=", cmd, " ret=", str, " wait=", answer)
 			}
 
 			if e != nil {
@@ -72,6 +70,12 @@ func TestServer(t *testing.T) {
 	tF(true, []string{"dec", "1"}, "0", "", 0)
 	tF(true, []string{"setnx", "100", "1"}, "1", "", 0)
 	tF(true, []string{"setnx", "100", "2"}, "1", "", 0)
+	tF(true, []string{"setifmore", "100", "0"}, "1", "", 0)
+	tF(true, []string{"setifmore", "100", "1"}, "1", "", 0)
+	tF(true, []string{"setifmore", "100", "2"}, "2", "", 0)
+	tF(true, []string{"setifmore", "100", "1"}, "2", "", 0)
+	tF(true, []string{"setifless", "100", "1"}, "1", "", 0)
+	tF(true, []string{"setifless", "100", "0"}, "", "", 0)
 	tF(true, []string{"setnx", "100"}, "", "invalid params", 0)
 	tF(true, []string{"incby", "1", "12"}, "12", "", 0)
 	tF(true, []string{"incby", "1", "12"}, "24", "", 0)
@@ -114,4 +118,9 @@ func TestServer(t *testing.T) {
 	tF(true, []string{"hsetnx", "h1", "5", "10"}, `10`, "", 0)
 	tF(true, []string{"hsetnx", "h1", "5", "11"}, `10`, "", 0)
 	tF(true, []string{"hsetnx", "h1", "5", "11", "19"}, ``, "invalid params", 0)
+	tF(true, []string{"hsetifmore", "h1", "5", "8"}, "10", "", 0)
+	tF(true, []string{"hsetifmore", "h1", "5", "13"}, "13", "", 0)
+	tF(true, []string{"hsetifless", "h1", "5", "23"}, "13", "", 0)
+	tF(true, []string{"hsetifless", "h1", "5", "3"}, "3", "", 0)
+	tF(true, []string{"hsetifless", "h1", "5", "0"}, "", "", 0)
 }
