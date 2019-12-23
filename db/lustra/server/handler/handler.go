@@ -49,6 +49,8 @@ func init() {
 	handlers["incby"] = fIncBy
 	handlers["ping"] = fPing
 	handlers["set"] = fSet
+	handlers["setifless"] = fSetIfLess
+	handlers["setifmore"] = fSetIfMore
 	handlers["setnx"] = fSetNX
 	handlers["time"] = fTime
 	handlers["version"] = fVersion
@@ -141,6 +143,32 @@ func fSetNX(storage Storage, list []string) (string, string) {
 	}
 
 	return storage.SetNX(list[0], list[1]), ""
+}
+
+func fSetIfMore(storage Storage, list []string) (string, string) {
+	if len(list) != 2 {
+		return "", errInvalidParams
+	}
+
+	val, err := strconv.ParseUint(list[1], 10, 64)
+	if err != nil {
+		return "", errInvalidParams
+	}
+
+	return storage.SetIfMore(list[0], val), ""
+}
+
+func fSetIfLess(storage Storage, list []string) (string, string) {
+	if len(list) != 2 {
+		return "", errInvalidParams
+	}
+
+	val, err := strconv.ParseUint(list[1], 10, 64)
+	if err != nil {
+		return "", errInvalidParams
+	}
+
+	return storage.SetIfLess(list[0], val), ""
 }
 
 func fDel(storage Storage, list []string) (string, string) {

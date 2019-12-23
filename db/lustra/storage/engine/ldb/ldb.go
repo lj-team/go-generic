@@ -54,6 +54,61 @@ func (s *engine) SetNX(k, v string) string {
 	return v
 }
 
+func (s *engine) SetIfMore(k string, v uint64) string {
+	key := []byte(k)
+
+	s.shared.Lock(key)
+	defer s.shared.UnLock(key)
+
+	if v == 0 {
+		return ""
+	}
+
+	val := s.Get(k)
+	if val == "" {
+		val = strconv.FormatUint(v, 10)
+		s.dbh.Set(key, []byte(val))
+		return val
+	}
+
+	old, _ := strconv.ParseUint(val, 10, 64)
+	if old < v {
+		val = strconv.FormatUint(v, 10)
+		s.dbh.Set(key, []byte(val))
+		return val
+	}
+
+	return val
+}
+
+func (s *engine) SetIfLess(k string, v uint64) string {
+	key := []byte(k)
+
+	s.shared.Lock(key)
+	defer s.shared.UnLock(key)
+
+	if v == 0 {
+		s.dbh.Del(key)
+		return ""
+	}
+
+	val := s.Get(k)
+	if val == "" {
+		val = strconv.FormatUint(v, 10)
+		s.dbh.Set(key, []byte(val))
+		return val
+	}
+
+	old, _ := strconv.ParseUint(val, 10, 64)
+	if old > v {
+		val = strconv.FormatUint(v, 10)
+		s.dbh.Set(key, []byte(val))
+		return val
+	}
+
+	return val
+}
+
 func (s *engine) IncBy(k string, cnt uint64) string {
 
 	key := []byte(k)

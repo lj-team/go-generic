@@ -153,4 +153,29 @@ func TestCache(t *testing.T) {
 	tSetNX("sn", "2", "1")
 	tSetNX("5", "19", "19")
 	tSetNX("5", "", "19")
+
+	tSetIfMore := func(k string, v uint64, w string) {
+		res := en.SetIfMore(k, v)
+		if res != w {
+			t.Fatalf("SetIfMore faiiled k=%s d=%d w=%s", k, v, w)
+		}
+	}
+
+	tSetIfMore("5", 8, "19")
+	tSetIfMore("5", 15, "19")
+	tSetIfMore("5", 20, "20")
+	tSetIfMore("sif", 3, "3")
+	tSetIfMore("sif1", 0, "")
+
+	tSetIfLess := func(k string, v uint64, w string) {
+		res := en.SetIfLess(k, v)
+		if res != w {
+			t.Fatalf("SetIfLess failed k=%s d=%d w=%s", k, v, w)
+		}
+	}
+
+	tSetIfLess("sif", 5, "3")
+	tSetIfLess("sif", 2, "2")
+	tSetIfLess("sif", 0, "")
+	tSetIfLess("sil", 13, "13")
 }
