@@ -20,6 +20,7 @@ func TestTextToCode(t *testing.T) {
 		"tests-123":         "test-123",
 		"москва. день 1":    "москв . день 1",
 		"аквальва":          "аквалев",
+		"батальи":           "баталья",
 	}
 
 	for k, v := range data {
