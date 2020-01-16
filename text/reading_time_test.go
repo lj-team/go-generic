@@ -13,7 +13,7 @@ func TestReadingTime(t *testing.T) {
   Штирлиц крутит настройки приёмника и находит лёгенький джаз. Голос за кадром вещает: «Лондон
   передавал веселую музыку. Оркестр американца Гленна Миллера играл композицию из «Серенады солнечной долины».`
 
-	if ReadingTime(strings.NewReader(text)) != 21 {
+	if ReadingTime(strings.NewReader(text)) != 18 {
 		t.Fatal("Invalid reading time")
 	}
 
@@ -58,7 +58,7 @@ func TestReadingTime(t *testing.T) {
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in RFC 2119 [RFC2119].`
 
-	if ReadingTime(strings.NewReader(text)) != 93 {
+	if ReadingTime(strings.NewReader(text)) != 80 {
 		t.Fatal("Invalid reading time")
 	}
 
@@ -69,7 +69,7 @@ func TestReadingTime(t *testing.T) {
   из сцен 1-й серии Штирлиц крутит настройки приёмника и находит
   лёгенький джаз`
 
-	if ReadingTime(strings.NewReader(text)) != 14 {
+	if ReadingTime(strings.NewReader(text)) != 12 {
 		t.Fatal("Invalid reading time")
 	}
 

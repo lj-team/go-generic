@@ -17,8 +17,8 @@ func ReadingTime(in io.Reader) int {
 		total++
 	})
 
-	// speed 3 words per second (180 word per minute)
-	val := total / 3
+	// 210 word per minute
+	val := (total * 2) / 7
 	if val <= 0 {
 		val = 1
 	}
