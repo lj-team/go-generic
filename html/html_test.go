@@ -14,7 +14,7 @@ func TestTextHtmlProcessString(t *testing.T) {
 
 	src := `<html><head><title>При<WBR/>вет ми<WbR />р</title><style>a{color:#CCC;}</style></head><body><h1>He<wbr>l&shy;l&#173;o<del>1</del></h1><script><!--
 	alert('hello')
---></script><iframe src="xxx"></iframe><strike>123</strike><a href='/url1'>url1</a><a href='/url2'><s>1</s>url2</a><img src="" title="img title"/><img src="" title="привет"/><img src="" title="dsc123"/></body></html>`
+--></script><iframe src="xxx"></iframe><strike>123</strike><a href='/url1'>url1</a><a href='/url2'><s>1</s>url2</a><img src="" title="img title"/><img src="" title="привет"/><img src="" title="dsc123"/><img src="" title="Смайлотрон - смайлики для ЖЖ!"/></body></html>`
 
 	res := h.Process(strings.NewReader(src))
 

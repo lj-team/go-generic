@@ -250,6 +250,10 @@ func skipAlt(txt string) bool {
 		return true
 	}
 
+	if strings.Index(txt, "смайлики для ЖЖ") >= 0 {
+		return true
+	}
+
 	if len(list) == 1 {
 
 		if !lang.IsRusWord(list[0]) && !lang.IsEngWord(list[0]) {
