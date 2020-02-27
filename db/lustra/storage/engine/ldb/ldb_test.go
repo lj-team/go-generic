@@ -82,6 +82,26 @@ func TestLDB(t *testing.T) {
 	tCBA("5", "123456", 3, `["1234","12345","123456"]`)
 	tCBA("5", "12345", 0, ``)
 
+	tUHEAP := func(k string, value string, limit int, wait string) {
+		en.UHeap(k, value, limit)
+		res := en.Get(k)
+		if res != wait {
+			t.Fatal("expect: " + wait)
+		}
+	}
+
+	tUHEAP("uheap", "1", 0, ``)
+	tUHEAP("uheap", "1", 3, `["1"]`)
+	tUHEAP("uheap", "1", 3, `["1"]`)
+	tUHEAP("uheap", "2", 3, `["1","2"]`)
+	tUHEAP("uheap", "3", 3, `["1","2","3"]`)
+	tUHEAP("uheap", "4", 3, `["2","3","4"]`)
+	tUHEAP("uheap", "3", 3, `["2","4","3"]`)
+	tUHEAP("uheap", "2", 3, `["4","3","2"]`)
+	tUHEAP("uheap", "2", 4, `["4","3","2"]`)
+	tUHEAP("uheap", "1", 4, `["4","3","2","1"]`)
+	tUHEAP("uheap", "3", 4, `["4","2","1","3"]`)
+
 	tHSet := func(h, k, v string) {
 		en.HSet(h, map[string]string{k: v})
 

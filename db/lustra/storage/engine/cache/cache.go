@@ -150,6 +150,59 @@ func (e *engine) DecBy(k string, val uint64) string {
 	return nv
 }
 
+func (s *engine) UHeap(list string, value string, limit int) {
+	key := []byte(list)
+
+	s.shared.Lock(key)
+	defer s.shared.UnLock(key)
+
+	if limit < 1 {
+		s.cache.Delete(list)
+		return
+	}
+
+	res, _ := s.cache.Get(list)
+
+	var queue []string
+
+	if len(res) > 3 {
+		if err := json.Unmarshal([]byte(res), &queue); err == nil {
+
+			idx := -1
+
+			for i, v := range queue {
+				if v == value {
+					idx = i
+					break
+				}
+			}
+
+			if idx >= 0 {
+
+				for i := idx; i < len(queue)-1; i++ {
+					queue[i] = queue[i+1]
+				}
+				queue[len(queue)-1] = value
+
+			} else {
+				queue = append(queue, value)
+			}
+
+			if len(queue) > limit {
+				queue = queue[len(queue)-limit:]
+			}
+
+			val, _ := json.Marshal(queue)
+			s.cache.Set(list, string(val))
+			return
+		}
+	}
+
+	queue = []string{value}
+	data, _ := json.Marshal(queue)
+	s.cache.Set(list, string(data))
+}
+
 func (s *engine) CBAdd(list string, value string, limit int) {
 	key := []byte(list)
 

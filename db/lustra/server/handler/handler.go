@@ -55,6 +55,7 @@ func init() {
 	handlers["setifmore"] = fSetIfMore
 	handlers["setnx"] = fSetNX
 	handlers["time"] = fTime
+	handlers["uheap"] = fUHeap
 	handlers["version"] = fVersion
 }
 
@@ -255,6 +256,19 @@ func fCBAdd(storage Storage, list []string) (string, string) {
 
 	if val, err := strconv.ParseInt(list[2], 10, 64); err == nil {
 		storage.CBAdd(list[0], list[1], int(val))
+		return defAnswer, ""
+	}
+
+	return "", errInvalidParams
+}
+
+func fUHeap(storage Storage, list []string) (string, string) {
+	if len(list) != 3 {
+		return "", errInvalidParams
+	}
+
+	if val, err := strconv.ParseInt(list[2], 10, 64); err == nil {
+		storage.UHeap(list[0], list[1], int(val))
 		return defAnswer, ""
 	}
 

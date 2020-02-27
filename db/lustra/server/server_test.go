@@ -123,4 +123,11 @@ func TestServer(t *testing.T) {
 	tF(true, []string{"hsetifless", "h1", "5", "23"}, "13", "", 0)
 	tF(true, []string{"hsetifless", "h1", "5", "3"}, "3", "", 0)
 	tF(true, []string{"hsetifless", "h1", "5", "0"}, "", "", 0)
+	tF(true, []string{"uheap", "uh", "1", "5"}, "ok", "", 0)
+	tF(true, []string{"uheap", "uh", "2", "5"}, "ok", "", 0)
+	tF(true, []string{"uheap", "uh", "3", "5"}, "ok", "", 0)
+	tF(true, []string{"uheap", "uh", "4", "5"}, "ok", "", 0)
+	tF(true, []string{"uheap", "uh", "5", "5"}, "ok", "", 0)
+	tF(true, []string{"uheap", "uh", "6", "5"}, "ok", "", 0)
+	tF(true, []string{"get", "uh"}, `["2","3","4","5","6"]`, "", 0)
 }

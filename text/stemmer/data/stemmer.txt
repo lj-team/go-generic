@@ -1,3 +1,4 @@
+
 abba abba
 abs abs
 acars acars
@@ -88,6 +89,10 @@ tiggo tiggo
 tiobe tiobe
 tui tui
 unix unix
+ussels ussel
+ussel ussel
+usse usse
+uss uss
 viii viii
 vii vii
 vi vi
@@ -2950,6 +2955,12 @@ zotye zotye
 ролан ролан
 ролану ролан
 россини россини
+рудова рудов
+рудове рудов
+рудовой рудов
+рудов рудов
+рудову рудов
+рудовым рудов
 румыниею румыния
 румынии румыния
 румынию румыния

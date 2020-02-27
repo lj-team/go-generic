@@ -21,6 +21,7 @@ type Engine interface {
 	HSetIfMore(string, string, uint64) string
 	SetIfLess(string, uint64) string
 	SetIfMore(string, uint64) string
+	UHeap(string, string, int)
 	Close()
 }
 
@@ -94,6 +95,12 @@ func (s *Storage) DecBy(k string, val uint64) string {
 func (s *Storage) CBAdd(list string, val string, limit int) {
 	if s.dbh != nil {
 		s.dbh.CBAdd(list, val, limit)
+	}
+}
+
+func (s *Storage) UHeap(list string, val string, limit int) {
+	if s.dbh != nil {
+		s.dbh.UHeap(list, val, limit)
 	}
 }
 
