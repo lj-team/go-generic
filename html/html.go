@@ -260,6 +260,12 @@ func skipAlt(txt string) bool {
 			return true
 		}
 
+	} else {
+
+		if len(list) > 2 && !lang.IsRus(txt) {
+			return true
+		}
+
 	}
 
 	return false
