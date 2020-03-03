@@ -28,6 +28,7 @@ cуринаме cуринам
 cуринамом cуринам
 cуринаму cуринам
 dbaas dbaas
+diao diao
 digital digital
 eastshade eastshade
 esni esni
@@ -62,6 +63,7 @@ lgbt lgbt
 librem librem
 linux linux
 lite lite
+mando mando
 nasa nasa
 nextmba nextmba
 okko okko
@@ -1680,6 +1682,7 @@ zotye zotye
 мексалин мексалин
 мексалином мексалин
 мексалину мексалин
+мерсье мерсье
 метаемся метаться
 метаетесь метаться
 метается метаться
