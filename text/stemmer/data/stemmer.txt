@@ -65,7 +65,11 @@ linux linux
 lite lite
 mando mando
 nasa nasa
+nesya nesya
+nesy nesy
 nextmba nextmba
+nyse nyse
+nyses nyses
 okko okko
 paas paas
 parkrun
@@ -2583,6 +2587,16 @@ zotye zotye
 поступить поступить
 поступлю поступить
 пошел пойти
+пошивами пошив
+пошивам пошив
+пошива пошив
+пошивах пошив
+пошиве пошив
+пошивов пошив
+пошивом пошив
+пошив пошив
+пошиву пошив
+пошивы пошив
 пошла пойти
 пошли пойти
 пошло пойти
