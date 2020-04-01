@@ -7,26 +7,24 @@ import (
 
 func TestGet(t *testing.T) {
 
-	list := make([]string, 64)
-	uniqs := make(map[string]bool)
+	data := map[string]string{}
 
-	dlg := New()
-	defer dlg.Close()
+	tN := func(k string) {
 
-	for i, _ := range list {
-		list[i] = dlg.Get(strconv.Itoa(i))
-		uniqs[list[i]] = true
-	}
-
-	if len(uniqs) != 64 {
-		t.Fatal("uniqs not work")
-	}
-
-	for i, v := range list {
-
-		if dlg.Get(strconv.Itoa(i)) != v {
-			t.Fatal("reuse keys not work")
+		val := Get(k)
+		if Get(k) != val {
+			t.Fatalf("Get caching failed for: %s", k)
 		}
+		data[k] = val
+	}
 
+	for i := 0; i < 100; i++ {
+		tN(strconv.Itoa(i))
+	}
+
+	for k, v := range data {
+		if Get(k) != v {
+			t.Fatalf("Caching failed for: %s", k)
+		}
 	}
 }

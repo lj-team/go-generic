@@ -1,38 +1,33 @@
 package bot
 
 import (
+	"strings"
 	"testing"
 )
 
 func TestBot(t *testing.T) {
 
-	msg := ""
-	did := ""
-
-	bot := New(&Config{RulesFile: "", AnswerFunc: func(id, in string) (string, bool) {
-
-		if did != "" && did != id {
-			t.Fatal("invalid did")
-		}
-
-		did = id
-		msg = in
-		return "", false
-	}, History: ""})
+	bot, _ := New("bot", strings.NewReader(""), strings.NewReader(`123:
+  - 123
+`), 0.1)
 
 	bot.AddRule("123", "123")
 
-	bot.Message("1", "123")
+	msg, ok := bot.Message("1", "123")
 
-	if msg != "123" {
+	if msg != "123" || !ok {
 		t.Fatal("answer func not work")
 	}
 
-	if did == "" {
-		t.Fatal("did not set")
+	msg, ok = bot.Message("1", "12")
+	if msg != "" || ok {
+		t.Fatal("failed")
 	}
 
-	bot.Message("1", "12")
+	msg, ok = bot.Message("1", "")
+	if msg != "" || ok {
+		t.Fatal("failed")
+	}
 }
 
 func TestPrepapreQuestion(t *testing.T) {
