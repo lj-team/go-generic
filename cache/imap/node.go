@@ -1,4 +1,4 @@
-package dmap
+package imap
 
 import (
 	"sync"
@@ -11,8 +11,8 @@ const (
 
 type node struct {
 	sync.RWMutex
-	data      map[string]int64
-	prev      map[string]int64
+	data      map[string]interface{}
+	prev      map[string]interface{}
 	limit     int
 	total     int
 	prevTotal int
@@ -21,15 +21,15 @@ type node struct {
 
 func makeNode(limit int) *node {
 	return &node{
-		data:      make(map[string]int64, int(float64(limit)*coeff_limit)),
-		prev:      map[string]int64{},
+		data:      make(map[string]interface{}, int(float64(limit)*coeff_limit)),
+		prev:      map[string]interface{}{},
 		limit:     limit,
 		threshold: int(float64(limit) * coeff_threshold),
 		total:     0,
 	}
 }
 
-func (n *node) Get(key string) (int64, bool) {
+func (n *node) Get(key string) (interface{}, bool) {
 	n.RLock()
 	defer n.RUnlock()
 
@@ -41,10 +41,16 @@ func (n *node) Get(key string) (int64, bool) {
 		return v, true
 	}
 
-	return 0, false
+	return nil, false
 }
 
-func (n *node) Set(key string, value int64) {
+func (n *node) Set(key string, value interface{}) {
+
+	if value == nil {
+		n.Delete(key)
+		return
+	}
+
 	n.Lock()
 	defer n.Unlock()
 
@@ -61,7 +67,7 @@ func (n *node) gc() {
 
 	if n.total >= n.threshold {
 		n.prev = n.data
-		n.data = make(map[string]int64, int(float64(n.limit)*coeff_limit))
+		n.data = make(map[string]interface{}, int(float64(n.limit)*coeff_limit))
 		n.prevTotal = n.total
 		n.total = 0
 	}
@@ -93,49 +99,13 @@ func (n *node) Flush() {
 	n.Lock()
 	defer n.Unlock()
 
-	n.data = make(map[string]int64, int(float64(n.limit)*coeff_limit))
-	n.prev = map[string]int64{}
+	n.data = make(map[string]interface{}, int(float64(n.limit)*coeff_limit))
+	n.prev = map[string]interface{}{}
 	n.total = 0
 	n.prevTotal = 0
 }
 
-func max(a1, a2 int64) int64 {
-	if a1 > a2 {
-		return a1
-	}
-
-	return a2
-}
-
-func (n *node) IncBy(key string, shift int64) int64 {
-	n.Lock()
-	defer n.Unlock()
-
-	val := max(shift, 0)
-
-	if old, has := n.data[key]; has {
-
-		val = max(old+shift, 0)
-		n.data[key] = val
-
-	} else if old, has := n.prev[key]; has {
-
-		n.gc()
-		n.total++
-
-		val = max(old+shift, 0)
-		n.data[key] = val
-
-	} else {
-		n.gc()
-		n.total++
-		n.data[key] = val
-	}
-
-	return val
-}
-
-func (n *node) Fetch(key string, fn FetchFunc) (int64, bool) {
+func (n *node) Fetch(key string, fn FetchFunc) (interface{}, bool) {
 
 	if res, has := n.Get(key); has {
 		return res, has
@@ -146,5 +116,5 @@ func (n *node) Fetch(key string, fn FetchFunc) (int64, bool) {
 		return res, true
 	}
 
-	return 0, false
+	return nil, false
 }
