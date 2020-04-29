@@ -9,8 +9,8 @@ func TestUniq(t *testing.T) {
 	u := New()
 	defer u.Close()
 
-	if !u.Check("c5b2ec53b1f7e48275dbb35aad333655a9fad1400b05a4781", true) {
-		t.Fatal("Check old failed")
+	if u.Check("c5b2ec53b1f7e48275dbb35aad333655a9fad1400b05a4781", true) {
+		t.Fatal("Check old success")
 	}
 
 	for i := 0; i < 300000; i++ {

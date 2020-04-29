@@ -79,6 +79,10 @@ func (u *Uniq) Check(val string, fullCheck bool) bool {
 		return false
 	}
 
+	if val[0] != 'f' {
+		return false
+	}
+
 	thex := val[17:25]
 	ts, e := strconv.ParseInt(thex, 16, 64)
 	if e != nil {
