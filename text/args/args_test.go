@@ -73,4 +73,23 @@ func TestTextToken(t *testing.T) {
 	tE([]string{"0\n"}, `"0\n"`)
 	tE([]string{`1\2`}, `"1\\2"`)
 	tE([]string{`"Тест"`, "игра"}, `"\"Тест\"" игра`)
+
+	res := make([]string, 0, 24)
+	r := ParseTo("welcome to \"5th test\" 098765", res)
+	if cap(r) != 24 {
+		t.Fatal("Invalid list cap")
+	}
+
+	if strings.Join(r, "|") != strings.Join([]string{"welcome", "to", "5th test", "098765"}, "|") {
+		t.Fatal("ParseTo failed")
+	}
+
+	r = ParseTo("welcome to \"5th test\" 098765", res)
+	if cap(r) != 24 {
+		t.Fatal("Invalid list cap")
+	}
+
+	if strings.Join(r, "|") != strings.Join([]string{"welcome", "to", "5th test", "098765"}, "|") {
+		t.Fatal("ParseTo failed")
+	}
 }

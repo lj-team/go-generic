@@ -39,12 +39,11 @@ func isSpace(c byte) bool {
 	return c == ' ' || c == '\t' || c == '\n' || c == '\r'
 }
 
-func parse(rd io.ByteReader) ([]string, error) {
+func parseTo(rd io.ByteReader, res []string) ([]string, error) {
 
 	mode := 0
 	bkmode := 0
 	cur := []byte{}
-	var res []string
 
 	for {
 
@@ -132,6 +131,11 @@ func parse(rd io.ByteReader) ([]string, error) {
 	return res, nil
 }
 
+func parse(input io.ByteReader) ([]string, error) {
+	var res []string
+	return parseTo(input, res)
+}
+
 func Read(input io.ByteReader) []string {
 
 	tokens, err := parse(input)
@@ -152,6 +156,13 @@ func Parse(str string) []string {
 	}
 
 	return tokens
+}
+
+func ParseTo(str string, res []string) []string {
+	if r, e := parseTo(strings.NewReader(str), res); e == nil {
+		return r
+	}
+	return nil
 }
 
 func encode(str string) string {
