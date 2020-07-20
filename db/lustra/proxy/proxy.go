@@ -32,6 +32,12 @@ func New(addrs []string) *Proxy {
 	return p
 }
 
+func (px *Proxy) Close() {
+	for _, c := range px.cons {
+		c.Close()
+	}
+}
+
 func NewStub() *Proxy {
 
 	con, _ := client.NewStub()
