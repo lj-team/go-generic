@@ -31,7 +31,7 @@ func NewClient(addr string) (*Client, error) {
 
 func (c *Client) Send(msg []byte) error {
 
-	c.con.SetWriteDeadline(time.Now().Add(5 * time.Second))
+	c.con.SetWriteDeadline(time.Now().Add(2 * time.Second))
 
 	_, err := c.con.Write(msg)
 	return err
@@ -39,7 +39,7 @@ func (c *Client) Send(msg []byte) error {
 
 func (c *Client) Read() ([]byte, error) {
 
-	c.con.SetReadDeadline(time.Now().Add(5 * time.Second))
+	c.con.SetReadDeadline(time.Now().Add(2 * time.Second))
 
 	n, _, err := c.con.ReadFromUDP(c.buffer)
 	if err != nil {
