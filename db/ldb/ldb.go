@@ -1,5 +1,11 @@
 package ldb
 
+import (
+	"fmt"
+	"os/exec"
+	"time"
+)
+
 var store Storage = nil
 var proxyConfig *Config
 
@@ -70,4 +76,29 @@ func ForEach(prefix []byte, RemovePrefix bool, fn FOR_EACH_FUNC) {
 func ForEachKey(prefix []byte, limit int, offset int, RemovePrefix bool, fn FOR_EACH_KEY_FUNC) {
 
 	store.ForEachKey(prefix, limit, offset, RemovePrefix, fn)
+}
+
+func TmpCopy(src string, fn func(Storage)) {
+
+	ts := time.Now().Unix()
+
+	tmpName := fmt.Sprintf("%s-%d", src, ts)
+
+	cmd := fmt.Sprintf("cp -r %s %s", src, tmpName)
+
+	exec.Command("sh", "-c", cmd).Run()
+
+	defer func() {
+		exec.Command("sh", "-c", "rm -rf "+tmpName).Run()
+	}()
+
+	db, err := Open(fmt.Sprintf("path=" + tmpName))
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	fn(db)
+
+	time.Sleep(time.Second * 2)
 }
