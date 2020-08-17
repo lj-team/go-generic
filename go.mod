@@ -1,6 +1,6 @@
 module github.com/lj-team/go-generic
 
-go 1.14
+go 1.15
 
 require (
 	github.com/CloudyKit/fastprinter v0.0.0-20170127035650-74b38d55f37a // indirect
