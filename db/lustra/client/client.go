@@ -3,14 +3,19 @@ package client
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"sync"
+	"sync/atomic"
+	"time"
 
 	"github.com/lj-team/go-generic/net/udp"
 	"github.com/lj-team/go-generic/text/args"
 )
 
 type client struct {
-	ua *udp.Client
+	ua      *udp.Client
+	startTS int64
+	nextId  int64
 	sync.Mutex
 }
 
@@ -20,7 +25,7 @@ func New(addr string) (Client, error) {
 		return nil, err
 	}
 
-	return &client{ua: ua}, nil
+	return &client{ua: ua, startTS: time.Now().Unix()}, nil
 }
 
 func (c *client) Close() {
@@ -58,22 +63,58 @@ func (c *client) sendread(msg []byte) ([]byte, error) {
 	return nil, errors.New("invalid answer message format")
 }
 
+func (c *client) sendreadid(id string, msg []byte) ([]byte, error) {
+	c.Lock()
+	defer c.Unlock()
+
+	if err := c.ua.Send(msg); err != nil {
+		return nil, err
+	}
+
+	for {
+
+		data, err := c.ua.Read()
+		if err != nil {
+			return nil, err
+		}
+
+		positive := "+" + id
+
+		if bytes.HasPrefix(data, []byte(positive)) {
+			data = data[len(positive):]
+			return data, nil
+		}
+
+		negative := "-" + id
+
+		if bytes.HasPrefix(data, []byte(negative)) {
+			return nil, errors.New(string(data[len(negative):]))
+		}
+	}
+
+	return nil, errors.New("invalid answer message format")
+}
+
 func (c *client) Exec(command ...string) (string, error) {
 
 	if len(command) == 0 {
 		return "", errors.New("no command")
 	}
 
+	atomic.AddInt64(&c.nextId, 1)
+
+	id := fmt.Sprintf("%04x%04x", c.startTS&0xffff, c.nextId&0xffff)
+
 	bb := bytes.NewBuffer(nil)
 
-	bb.WriteString("exec")
+	bb.WriteString("exec" + id)
 
 	for _, v := range command {
 		bb.WriteByte(' ')
 		bb.WriteString(args.ToString(v))
 	}
 
-	data, err := c.sendread(bb.Bytes())
+	data, err := c.sendreadid(id, bb.Bytes())
 	return string(data), err
 }
 

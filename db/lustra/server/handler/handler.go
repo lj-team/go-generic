@@ -2,8 +2,8 @@ package handler
 
 import (
 	"bytes"
-	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/lj-team/go-generic/db/lustra/global"
@@ -66,11 +66,25 @@ func Handler(storage Storage, in []byte) []byte {
 		return nil
 	}
 
-	mode := list[0]
+	id := list[0]
+	isExec := false
 
-	if mode != "exec" && mode != "async" {
-		fmt.Println(list[0])
-		return nil
+	switch id {
+	case "exec":
+		isExec = true
+		id = ""
+
+	case "async":
+		id = ""
+
+	default:
+
+		if strings.Index(id, "exec") == 0 {
+			id = id[4:]
+			isExec = true
+		} else {
+			return nil
+		}
 	}
 
 	cmd := list[1]
@@ -81,17 +95,21 @@ func Handler(storage Storage, in []byte) []byte {
 
 	if fn, h := handlers[cmd]; h {
 		answer, err = fn(storage, list)
-		if err != "" {
-			answer = errPrefix + err
-		} else {
-			answer = resPrefix + answer
+		if isExec {
+			if err != "" {
+				answer = errPrefix + id + err
+			} else {
+				answer = resPrefix + id + answer
+			}
 		}
 
 	} else {
-		answer = errPrefix + errUnknownCommand
+		if isExec {
+			answer = errPrefix + id + errUnknownCommand
+		}
 	}
 
-	if mode == "exec" {
+	if isExec {
 		return []byte(answer)
 	}
 
