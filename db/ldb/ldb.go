@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os/exec"
 	"time"
+
+	"github.com/lj-team/go-generic/log"
 )
 
 var store Storage = nil
@@ -80,25 +82,37 @@ func ForEachKey(prefix []byte, limit int, offset int, RemovePrefix bool, fn FOR_
 
 func TmpCopy(src string, fn func(Storage)) {
 
-	ts := time.Now().Unix()
+	tmpCopy := func() bool {
 
-	tmpName := fmt.Sprintf("%s-%d", src, ts)
+		defer time.Sleep(time.Second * 3)
 
-	cmd := fmt.Sprintf("cp -r %s %s", src, tmpName)
+		ts := time.Now().Unix()
 
-	exec.Command("sh", "-c", cmd).Run()
+		tmpName := fmt.Sprintf("%s-%d-%d", src, ts, time.Now().UnixNano()%1000)
 
-	defer func() {
-		exec.Command("sh", "-c", "rm -rf "+tmpName).Run()
-	}()
+		cmd := fmt.Sprintf("cp -r %s %s", src, tmpName)
 
-	db, err := Open(fmt.Sprintf("path=" + tmpName))
-	if err != nil {
-		panic(err)
+		exec.Command("sh", "-c", cmd).Run()
+
+		defer func() {
+			exec.Command("sh", "-c", "rm -rf "+tmpName).Run()
+		}()
+
+		db, err := Open(fmt.Sprintf("path=" + tmpName))
+		if err != nil {
+			log.Error(err.Error() + " " + tmpName)
+			return false
+		}
+		defer db.Close()
+
+		fn(db)
+
+		return true
 	}
-	defer db.Close()
 
-	fn(db)
-
-	time.Sleep(time.Second * 2)
+	for i := 0; i < 5; i++ {
+		if tmpCopy() {
+			return
+		}
+	}
 }
