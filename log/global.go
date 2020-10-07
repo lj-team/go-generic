@@ -70,6 +70,10 @@ func Logger(level string, strs ...interface{}) {
 	defLog.Logger(level, strs)
 }
 
+func Stack(lvl string) {
+	defLog.Stack(lvl)
+}
+
 func Close() {
 	defLog.Close()
 	defLog = nil

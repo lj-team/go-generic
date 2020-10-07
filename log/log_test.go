@@ -24,6 +24,7 @@ func TestLoggerSetLevel(t *testing.T) {
 
 	Errorf("failed %d", 1)
 	Finishf("finish %s", "ok")
+	Stack("error")
 
 	defLog.Close()
 
@@ -39,6 +40,7 @@ func TestLoggerSetLevel(t *testing.T) {
 	Warnf("Hello, %s", "Mike")
 	Debugf("Hello, %s", "Mike")
 	Tracef("Hello, %s", "Mike")
+	Stack("error")
 
 	Close()
 }

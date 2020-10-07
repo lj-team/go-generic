@@ -3,6 +3,7 @@ package log
 import (
 	"fmt"
 	"os"
+	"runtime"
 	"time"
 
 	"github.com/lj-team/go-generic/text/kv"
@@ -301,4 +302,10 @@ func (l *Log) GetLevel() string {
 		}
 	}
 	return "none"
+}
+
+func (l *Log) Stack(lvl string) {
+	buf := make([]byte, 1024*100)
+	n := runtime.Stack(buf, false)
+	l.Logger(lvl, []interface{}{string(buf[:n])})
 }
