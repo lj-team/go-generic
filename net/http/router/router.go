@@ -176,6 +176,7 @@ func (r *Router) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 		if re := recover(); re != nil {
 			log.Error(fmt.Sprint(re))
+			log.Stack("error")
 			r.InternalErrorFunc(rw, req)
 		}
 
