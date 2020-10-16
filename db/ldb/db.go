@@ -68,7 +68,9 @@ func New(cfg *Config, def bool) (*DB, error) {
 
 	if err != nil {
 		log.Error(err)
-		store = nil
+		if def {
+			store = nil
+		}
 	} else if def {
 		store = db
 	}
