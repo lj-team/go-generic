@@ -15,3 +15,7 @@ func Start(addr string, driver string, opts string) error {
 
 	return nil
 }
+
+func BatchServer(udpAddr string, httpAddr string, driver string, opts string) {
+	server.BatchServer(udpAddr, httpAddr, driver, opts)
+}

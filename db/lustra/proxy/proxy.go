@@ -1,9 +1,11 @@
 package proxy
 
 import (
+	"bytes"
 	"errors"
 
 	"github.com/lj-team/go-generic/db/lustra/client"
+	"github.com/lj-team/go-generic/text/args"
 
 	_ "github.com/lj-team/go-generic/db/lustra/storage/engine/cache"
 )
@@ -93,4 +95,18 @@ func (p *Proxy) Async(command ...string) {
 		con.Async(command...)
 	}
 
+}
+
+func (p *Proxy) CommandString(command ...string) string {
+
+	bb := bytes.NewBuffer(nil)
+
+	for i, v := range command {
+		if i > 0 {
+			bb.WriteByte(' ')
+		}
+		bb.WriteString(args.ToString(v))
+	}
+
+	return bb.String()
 }

@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"bufio"
 	"bytes"
+	"io"
 	"strconv"
 	"strings"
 	"time"
@@ -379,4 +381,24 @@ func fHDecBy(storage Storage, list []string) (string, string) {
 	}
 
 	return "", errInvalidParams
+}
+
+func Batch(storage Storage, in io.Reader) {
+	br := bufio.NewReader(in)
+
+	for {
+		str, err := br.ReadString('\n')
+		if err != nil && str == "" {
+			break
+		}
+
+		list := args.Read(strings.NewReader(str))
+		if len(list) > 0 {
+			cmd := list[0]
+			list = list[1:]
+			if fn, h := handlers[cmd]; h {
+				fn(storage, list)
+			}
+		}
+	}
 }
