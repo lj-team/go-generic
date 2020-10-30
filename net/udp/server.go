@@ -29,6 +29,8 @@ func Server(addr string, fn Handler) error {
 	ln.SetReadBuffer(setBufferSize)
 	ln.SetWriteBuffer(setBufferSize)
 
+	log.Infof("start udp server: %s", addr)
+
 	pool := sync.Pool{New: func() interface{} { return make([]byte, 64*1024) }}
 
 	for {
