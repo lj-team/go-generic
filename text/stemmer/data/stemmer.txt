@@ -17,8 +17,8 @@ bowie
 ces
 chablis chablis
 chateau chateau
-chery chery
 château chateau
+chery chery
 cisco
 cognac cognac
 concorde concorde
@@ -1380,6 +1380,7 @@ zotye zotye
 самый самый
 самым самый
 самых самый
+санду санду
 санье санья
 саньи санья
 санью санья
