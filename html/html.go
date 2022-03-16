@@ -30,6 +30,7 @@ type HTML struct {
 	links   map[string]bool
 	iframes map[string]bool
 	images  map[string]bool
+	divs    []map[string]string
 
 	Erase map[string]bool
 
@@ -198,6 +199,14 @@ func (h *HTML) onStartTag(t *ht.Token, raw string) {
 			if a.Key == "src" && h.opts.LinkStat {
 				h.iframes[a.Val] = true
 			}
+		}
+
+	case "div":
+
+		for _, a := range t.Attr {
+			tmp := make(map[string]string)
+			tmp[a.Key] = a.Val
+			h.divs = append(h.divs, tmp)
 		}
 
 	case "img":
@@ -384,6 +393,23 @@ func (h *HTML) iterate(hash map[string]bool) <-chan string {
 	return out
 }
 
+func (h *HTML) iterateArr(arr []map[string]string) <-chan map[string]string {
+	out := make(chan map[string]string)
+
+	go func() {
+
+		defer close(out)
+
+		for _, v := range arr {
+
+			out <- v
+		}
+
+	}()
+
+	return out
+}
+
 func (h *HTML) Images() <-chan string {
 
 	return h.iterate(h.images)
@@ -397,4 +423,9 @@ func (h *HTML) Links() <-chan string {
 func (h *HTML) Iframes() <-chan string {
 
 	return h.iterate(h.iframes)
+}
+
+func (h *HTML) Divs() <-chan map[string]string {
+
+	return h.iterateArr(h.divs)
 }
