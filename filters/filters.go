@@ -1,5 +1,6 @@
 package filters
 
+// DEPRICATED используй arrays.Filter
 func String(arr []string, cond func(string) bool) []string {
 	result := make([]string, 0, len(arr))
 	for i := range arr {
