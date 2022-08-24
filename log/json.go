@@ -10,34 +10,68 @@ import (
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
+type LogJSON struct {
+	logLevel string
+	params   P
+}
+
 type P map[string]any
 
-func InfoJSON(params P) {
-	defLog.LoggerJSON("info", params)
+func newLog(logLevel string) *LogJSON {
+	return &LogJSON{
+		logLevel: logLevel,
+		params:   P{},
+	}
 }
 
-func WarnJSON(params P) {
-	defLog.LoggerJSON("warn", params)
+func InfoJSON() *LogJSON {
+	return newLog("info")
 }
 
-func ErrorJSON(params P) {
-	defLog.LoggerJSON("error", params)
+func WarnJSON() *LogJSON {
+	return newLog("warn")
 }
 
-func DebugJSON(params P) {
-	defLog.LoggerJSON("debug", params)
+func ErrorJSON() *LogJSON {
+	return newLog("error")
 }
 
-func MessageJSON(msg string) {
-	defLog.LoggerJSON("info", P{"message": msg})
+func DebugJSON() *LogJSON {
+	return newLog("debug")
 }
 
-func FinishJSON(params P) {
-	defLog.LoggerJSON("info", params)
+func (lj *LogJSON) Params(params P) *LogJSON {
+	lj.params = params
+	return lj
+}
+
+func (lj *LogJSON) Message(msg string) {
+	if msg != "" {
+		lj.params["message"] = msg
+	}
+	lj.send()
+}
+
+func (lj *LogJSON) Finish(msg string) {
+	if msg != "" {
+		lj.params["message"] = msg
+	}
+	lj.send()
 	defLog.Close()
 }
 
-func (l *Log) LoggerJSON(logLevel string, params P) {
+func (lj *LogJSON) Send() {
+	lj.send()
+}
+
+func (lj *LogJSON) send() {
+	lj.params["timestamp"] = strftime.Format("%Y-%m-%d %H:%M:%S", time.Now())
+	lj.params["log_level"] = lj.logLevel
+
+	defLog.loggerJSON(lj.params)
+}
+
+func (l *Log) loggerJSON(params P) {
 
 	if l == nil {
 		return
@@ -47,10 +81,7 @@ func (l *Log) LoggerJSON(logLevel string, params P) {
 		return
 	}
 
-	params["timestamp"] = strftime.Format("%Y-%m-%d %H:%M:%S", time.Now())
-	params["log_level"] = logLevel
-
 	data, _ := json.MarshalToString(&params)
 
-	l.input <- data
+	l.input <- data + "\n"
 }
