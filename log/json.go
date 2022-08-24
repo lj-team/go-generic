@@ -28,6 +28,10 @@ func DebugJSON(params P) {
 	defLog.LoggerJSON("debug", params)
 }
 
+func MessageJSON(msg string) {
+	defLog.LoggerJSON("info", P{"message": msg})
+}
+
 func FinishJSON(params P) {
 	defLog.LoggerJSON("info", params)
 	defLog.Close()
