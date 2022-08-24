@@ -50,7 +50,7 @@ func (l *Log) Logger(level string, strs []interface{}) {
 	code, ok := logLevels[level]
 	if ok && code <= l.level {
 		for _, text := range strs {
-			l.input <- level + "| " + fmt.Sprint(text)
+			l.input <- strftime.Format("%Y-%m-%d %H:%M:%S", time.Now()) + " | " + level + " | " + fmt.Sprint(text) + "\n"
 		}
 	}
 }
@@ -182,8 +182,6 @@ func (l *Log) writer() {
 				return
 			}
 
-			str = strftime.Format("%Y-%m-%d %H:%M:%S", time.Now()) + "|" + str + "\n"
-
 			if l.fh != nil {
 				l.rotate()
 				l.fh.WriteString(str)
@@ -211,7 +209,7 @@ func (l *Log) writer() {
 
 func (l *Log) Close() {
 	if l != nil {
-		if l.end != true {
+		if !l.end {
 			l.end = true
 			l.input <- eof
 			<-l.eofC
