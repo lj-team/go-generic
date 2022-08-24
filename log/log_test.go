@@ -49,39 +49,35 @@ func TestLoggerSetLevel(t *testing.T) {
 func TestMarshalJSON(t *testing.T) {
 	defLog, _ = Open("global=1")
 
-	p1 := P{
-		RequestID: "123",
-		Entity:    "123",
-		External:  123,
-		Message:   "Test1",
-	}
-	p2 := P{
-		RequestID: "456",
-		Entity:    "456",
-		External:  456,
-		Message:   "Test2",
-	}
-	p3 := P{
-		RequestID: "789",
-		Entity:    789,
-		External:  "789",
-		Message:   "Test3",
-	}
-
 	wg := sync.WaitGroup{}
 	for i := 0; i < 1000; i++ {
 		wg.Add(3)
 		go func() {
 			defer wg.Done()
-			InfoJSON(p1)
+			InfoJSON(P{
+				"RequestID": "123",
+				"Entity":    "123",
+				"External":  123,
+				"Message":   "Test1",
+			})
 		}()
 		go func() {
 			defer wg.Done()
-			WarnJSON(p2)
+			WarnJSON(P{
+				"RequestID": "456",
+				"Entity":    "456",
+				"External":  456,
+				"Message":   "Test2",
+			})
 		}()
 		go func() {
 			defer wg.Done()
-			ErrorJSON(p3)
+			ErrorJSON(P{
+				"RequestID": "789",
+				"Entity":    789,
+				"External":  "789",
+				"Message":   "Test3",
+			})
 		}()
 	}
 	wg.Wait()

@@ -10,18 +10,7 @@ import (
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
-type p struct {
-	Timestamp string `json:"timestamp"`
-	LogLevel  string `json:"log_level"`
-	P
-}
-
-type P struct {
-	RequestID string `json:"request_id,omitempty"`
-	Entity    any    `json:"entity,omitempty"`
-	External  any    `json:"external,omitempty"`
-	Message   string `json:"message"`
-}
+type P map[string]any
 
 func InfoJSON(params P) {
 	defLog.LoggerJSON("info", params)
@@ -54,11 +43,10 @@ func (l *Log) LoggerJSON(logLevel string, params P) {
 		return
 	}
 
-	data, _ := json.MarshalToString(&p{
-		Timestamp: strftime.Format("%Y-%m-%d %H:%M:%S", time.Now()),
-		LogLevel:  logLevel,
-		P:         params,
-	})
+	params["timestamp"] = strftime.Format("%Y-%m-%d %H:%M:%S", time.Now())
+	params["log_level"] = logLevel
+
+	data, _ := json.MarshalToString(&params)
 
 	l.input <- data
 }
