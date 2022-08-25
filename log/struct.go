@@ -80,8 +80,8 @@ func send(logLevel, message string, params []any, pairs bool) {
 		`[%s] [%s] [%s] [%s]`,
 		strftime.Format("%Y-%m-%d %H:%M:%S", time.Now()),
 		logLevel,
-		strings.Join(paramsString, ";"),
 		message,
+		strings.Join(paramsString, ";"),
 	)
 
 	defLog.loggerStructed(str)
