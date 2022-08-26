@@ -80,10 +80,10 @@ func TestLogerStructed(t *testing.T) {
 
 	InfoParams("test")
 	InfoParams("test", 123, 3.5)
-	InfoParams("test", 123, 3.5, "test2")
+	InfoParams("", 123, 3.5, "test2")
 
 	InfoPairs("test")
 	InfoPairs("test", 123, 3.5)
 	InfoPairs("test", 123, 3.5, "testKey", "testValue")
-	InfoPairs("test", 123, 3.5, "testKey", "testValue", "wrong")
+	InfoPairs("", 123, 3.5, "testKey", "testValue", "wrong")
 }

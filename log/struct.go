@@ -77,7 +77,7 @@ func send(logLevel, message string, params []any, pairs bool) {
 	}
 
 	str := fmt.Sprintf(
-		`[%s] [%s] [%s] [%s]`,
+		`%s | %s | %s | %s`,
 		strftime.Format("%Y-%m-%d %H:%M:%S", time.Now()),
 		logLevel,
 		message,
