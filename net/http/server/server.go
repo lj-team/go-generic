@@ -16,7 +16,7 @@ type (
 
 func Start(addr string) error {
 
-	log.Info("start server on " + addr)
+	log.InfoParams("start server on", addr)
 
 	return http.ListenAndServe(addr, router.GetDefault())
 }

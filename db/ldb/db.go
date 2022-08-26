@@ -58,7 +58,7 @@ func New(cfg *Config, def bool) (*DB, error) {
 
 	var err error
 
-	log.Info("open database: " + cfg.Path)
+	log.InfoParams("open database", cfg.Path)
 	db.ldb, err = leveldb.OpenFile(cfg.Path, &opt.Options{
 		CompactionTableSize: size,
 		WriteBuffer:         size * mul,
