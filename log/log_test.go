@@ -86,4 +86,8 @@ func TestLogerStructed(t *testing.T) {
 	InfoPairs("test", 123, 3.5)
 	InfoPairs("test", 123, 3.5, "testKey", "testValue")
 	InfoPairs("", 123, 3.5, "testKey", "testValue", "wrong")
+
+	InfoParams("test", map[string]any{"foo": "bar", "bar": "foo"})
+	// InfoParams("test", 123, 3.5)
+	// InfoParams("", 123, 3.5, "test2")
 }
