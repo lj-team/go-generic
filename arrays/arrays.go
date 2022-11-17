@@ -11,18 +11,29 @@ func Filter[T comparable](arr []T, cond func(T) bool) []T {
 }
 
 func In[T comparable](value T, arr []T) bool {
-	for _, v := range arr {
-		if v == value {
+	for i := range arr {
+		if arr[i] == value {
 			return true
 		}
 	}
 	return false
 }
 
-func ChunkBy[T any](items []T, chunkSize int) [][]T {
-	var _chunks = make([][]T, 0, (len(items)/chunkSize)+1)
-	for chunkSize < len(items) {
-		items, _chunks = items[chunkSize:], append(_chunks, items[0:chunkSize:chunkSize])
+func OneIn[T comparable](values []T, arr []T) bool {
+	for i := range arr {
+		for j := range values {
+			if arr[i] == values[j] {
+				return true
+			}
+		}
 	}
-	return append(_chunks, items)
+	return false
+}
+
+func ChunkBy[T any](items []T, chunkSize int) [][]T {
+	var chunks = make([][]T, 0, (len(items)/chunkSize)+1)
+	for chunkSize < len(items) {
+		items, chunks = items[chunkSize:], append(chunks, items[0:chunkSize:chunkSize])
+	}
+	return append(chunks, items)
 }
