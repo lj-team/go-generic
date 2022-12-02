@@ -9,8 +9,9 @@ require (
 	github.com/sevlyar/go-daemon v0.1.5
 	github.com/stretchr/testify v1.4.0
 	github.com/syndtr/goleveldb v1.0.0
+	golang.org/x/exp v0.0.0-20221126150942-6ab00d035af9
 	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553
-	golang.org/x/sys v0.0.0-20191210023423-ac6580df4449
+	golang.org/x/sys v0.1.0
 	gopkg.in/yaml.v2 v2.2.2
 )
 
