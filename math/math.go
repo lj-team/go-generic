@@ -22,6 +22,6 @@ func Min[N Number](a, b N) N {
 	return b
 }
 
-func Clamp[N Number](v, lo, hi N) N {
-	return Min(Max(v, lo), hi)
+func Clamp[N Number](v, min, max N) N {
+	return Min(Max(v, min), max)
 }
